@@ -7,5 +7,14 @@ namespace TripSpennies.Hybrid.Mobile.Data
     {
         [PrimaryKey, MaxLength(100)]
         public string Name { get; set; }
+
+        public ExpenseCategory()
+        {
+        }
+
+        public ExpenseCategory(string name)
+        {
+            Name = name;
+        }
     }
 }

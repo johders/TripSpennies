@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 using TripSpennies.Hybrid.Mobile.Data;
+using TripSpennies.Hybrid.Mobile.Services;
 
 namespace TripSpennies.Hybrid.Mobile
 {
@@ -30,7 +31,8 @@ namespace TripSpennies.Hybrid.Mobile
 
         private static void AddServices(IServiceCollection services)
         {
-            services.AddSingleton<DbContext>();
+            services.AddSingleton<DbContext>()
+                    .AddScoped<SeedDataService>();
         }
     }
 }

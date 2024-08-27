@@ -1,12 +1,21 @@
-﻿namespace TripSpennies.Hybrid.Mobile
+﻿
+namespace TripSpennies.Hybrid.Mobile
 {
     public partial class App : Application
     {
-        public App()
+        private readonly SeedDataService _seedDataService;
+        public App(SeedDataService seedDataService)
         {
             InitializeComponent();
 
             MainPage = new MainPage();
+            _seedDataService = seedDataService;
+        }
+
+        protected override async void OnStart()
+        {
+            base.OnStart();
+            await _seedDataService.SeedDataAsync();
         }
     }
 }

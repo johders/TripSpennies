@@ -16,6 +16,12 @@ namespace TripSpennies.Hybrid.Mobile.Data
             await database.CreateTableAsync<TTable>();
         }
 
+        private async Task<TResult> Execute<TTable, TResult>(Func<Task<TResult>> action) where TTable : class, new()
+        {
+            await CreateTableIfNotExists<TTable>();
+            return await action();
+        }
+
         private async Task<AsyncTableQuery<TTable>> GetTableAsync<TTable>() where TTable : class, new()
         {
             await CreateTableIfNotExists<TTable>();
@@ -63,6 +69,9 @@ namespace TripSpennies.Hybrid.Mobile.Data
             await CreateTableIfNotExists<TTable>();
             return await database.DeleteAsync<TTable>(primaryKey) > 0;
         }
+
+        public async Task<TTable> FindAsync<TTable>(object primaryKey) where TTable : class, new() => 
+            await Execute<TTable, TTable>(async () => await database.FindAsync<TTable>(primaryKey));
 
         public async ValueTask DisposeAsync()
         {
