@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace TripSpennies.Hybrid.Mobile.Data
 {
-    public class DatabaseContext : IAsyncDisposable
+    public class DbContext : IAsyncDisposable
     {
         private const string dbName = "MyMauiDb.db3";
         private static string dbPath => Path.Combine(FileSystem.AppDataDirectory, dbName);

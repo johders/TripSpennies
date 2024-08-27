@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SQLite;
+using MaxLengthAttribute = System.ComponentModel.DataAnnotations.MaxLengthAttribute;
 
 namespace TripSpennies.Hybrid.Mobile.Data
 {
     public class ExpenseCategory
     {
+        [PrimaryKey, MaxLength(100)]
         public string Name { get; set; }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Runtime.CompilerServices;
+using TripSpennies.Hybrid.Mobile.Data;
 
 namespace TripSpennies.Hybrid.Mobile
 {
@@ -21,7 +23,14 @@ namespace TripSpennies.Hybrid.Mobile
     		builder.Logging.AddDebug();
 #endif
 
+            AddServices(builder.Services);
+
             return builder.Build();
+        }
+
+        private static void AddServices(IServiceCollection services)
+        {
+            services.AddSingleton<DbContext>();
         }
     }
 }
