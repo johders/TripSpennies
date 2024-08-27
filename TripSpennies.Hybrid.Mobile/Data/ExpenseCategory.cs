@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace TripSpennies.Hybrid.Mobile.Data
+{
+    public class ExpenseCategory
+    {
+        public string Name { get; set; }
+    }
+}
