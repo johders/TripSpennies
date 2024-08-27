@@ -1,7 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System.Runtime.CompilerServices;
-using TripSpennies.Hybrid.Mobile.Data;
-using TripSpennies.Hybrid.Mobile.Services;
 
 namespace TripSpennies.Hybrid.Mobile
 {
