@@ -1,11 +1,15 @@
 ﻿@inherits LayoutComponentBase
-@inject MauiInterop interop
 
+@implements IDisposable
+
+@inject MauiInterop interop
+@inject NavigationManager navManager
+@inject AppState appState
 
 <div class="w-100 position-fixed p-3 mb-3 bg-white shadow-sm top-navbar">
 	<div class="hstack gap-3">
-		<h3 class="m-0 w-100 @(interop.IsIos ? "text-center" : "text-start")">Spennies Manager</h3>
-		<i class="bi bi-person h2 my-auto"></i>
+		<h3 class="m-0 w-100 @(interop.IsIos ? "text-center" : "text-start")">@appState.PageTitle</h3>
+		<i class="bi bi-person-circle h2 my-auto"></i>
 	</div>
 </div>
 
@@ -15,20 +19,55 @@
 
 <div class="d-flex justify-content-center w-100">
 	<div class="d-flex justify-content-center align-items-center vw-90 p-2 mx-1 my-2 bg-success bg-gradient position-fixed rounded-pill shadow-lg bottom-tabbar">
-		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center">
+		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center" @onclick="() => GoToPage(AppConstants.MenuItems.Home)">
 			<i class="bi bi-house-door-fill h3 mb-0"></i>
 			<span class="fs-12">Home</span>
 		</label>
-		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center">
+		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center" @onclick="() => GoToPage(AppConstants.MenuItems.Trips)">
 			<i class="bi bi-suitcase-lg-fill h3 mb-0"></i>
 			<span class="fs-12">Trips</span>
 		</label>
-		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center">
+		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center" @onclick="@(() => GoToInnerPage("/trips/manage"))" >
 			<i class="bi bi-plus-circle h1 mb-0"></i>
 		</label>
-		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center">
+		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center" @onclick="() => GoToPage(AppConstants.MenuItems.Settings)">
 			<i class="bi bi-gear-fill h3 mb-0"></i>
 			<span class="fs-12">Settings</span>
 		</label>
 	</div>
 </div>
+
+@code{
+
+	private static IDictionary<string, string> _pagesMap = new Dictionary<string, string>
+	{
+		[AppConstants.MenuItems.Home] = "/",
+		[AppConstants.MenuItems.Trips] = "/trips",
+		[AppConstants.MenuItems.Settings] = "/settings"
+	};
+
+	protected override void OnInitialized()
+	{
+		appState.SelectedMenuItemChangedEvent += OnSelectedMenuItemChanged;
+	}
+
+	private void OnSelectedMenuItemChanged(object? sender, string selectedMenuItem)
+	{
+		StateHasChanged();	
+	}
+
+	private void GoToPage(string pageName)
+	{
+		navManager.NavigateTo(_pagesMap[pageName]);
+	}
+
+	private void GoToInnerPage(string url)
+	{
+		navManager.NavigateTo(url);
+	}
+
+	public void Dispose()
+	{
+		appState.SelectedMenuItemChangedEvent -= OnSelectedMenuItemChanged;
+	}
+}

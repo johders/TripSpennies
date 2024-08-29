@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Maui;
 using Microsoft.Extensions.Logging;
-using TripSpennies.Hybrid.Mobile.ViewModels;
 
 namespace TripSpennies.Hybrid.Mobile
 {
@@ -32,7 +31,8 @@ namespace TripSpennies.Hybrid.Mobile
         private static void AddServices(IServiceCollection services)
         {
             services.AddSingleton<AppViewModel>()
-                    .AddSingleton<MauiInterop>();
+                    .AddSingleton<MauiInterop>()
+                    .AddSingleton<AppState>();
 
             services.AddSingleton<DbContext>()
                     .AddScoped<SeedDataService>();

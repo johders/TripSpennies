@@ -1,13 +1,9 @@
-:root{
-    --navbar-height:50px;
-}
-
 .top-navbar{
     height: var(--navbar-height);
     z-index: 10;
 }
 
-.body-content{
+.body-content {
     padding-top: var(--navbar-height);
 }
 

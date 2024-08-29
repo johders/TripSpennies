@@ -1,0 +1,14 @@
+﻿@page "/settings"
+
+@inject AppState appState
+
+
+<h3>Settings</h3>
+
+@code {
+	protected override async Task OnInitializedAsync()
+	{
+		appState.SetSelectedMenuItem(AppConstants.MenuItems.Settings);
+	}
+
+}

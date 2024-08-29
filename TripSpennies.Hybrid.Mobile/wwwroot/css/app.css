@@ -3,6 +3,10 @@
     src: url('./fonts/Montserrat-Regular.ttf') format('truetype');
 }
 
+:root {
+    --navbar-height: 50px;
+}
+
 html, body {
     /*font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;*/
     font-family: 'Montserrat', Helvetica, Arial, sans-serif;
