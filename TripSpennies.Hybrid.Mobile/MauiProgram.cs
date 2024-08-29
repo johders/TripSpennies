@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using TripSpennies.Hybrid.Mobile.ViewModels;
 
 namespace TripSpennies.Hybrid.Mobile
 {
@@ -30,7 +31,8 @@ namespace TripSpennies.Hybrid.Mobile
         {
             services.AddSingleton<DbContext>()
                     .AddScoped<SeedDataService>()
-                    .AddScoped<AuthorizationService>();
+                    .AddScoped<AuthorizationService>()
+                    .AddTransient<AppViewModel>();
         }
     }
 }
