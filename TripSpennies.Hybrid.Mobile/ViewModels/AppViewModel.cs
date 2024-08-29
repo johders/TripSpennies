@@ -11,7 +11,7 @@ namespace TripSpennies.Hybrid.Mobile.ViewModels
 		public bool IsBusy
 		{
 			get => _isBusy;
-			set
+			private set
 			{
 				if (_isBusy != value)
 				{
@@ -21,6 +21,11 @@ namespace TripSpennies.Hybrid.Mobile.ViewModels
 					}
 				}
 			}
+		}
+
+		public void ToggleIsBusy(bool isBusy)
+		{
+			IsBusy = isBusy;
 		}
 	}
 }

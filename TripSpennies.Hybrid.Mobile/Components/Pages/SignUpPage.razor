@@ -1,7 +1,73 @@
 ﻿@page "/signup"
 
-<h3>Register</h3>
+@layout AuthorizationLayout
+
+@inject AuthorizationService authService
+@inject MauiInterop interop
+@inject NavigationManager navManager
+
+<EditForm Model="_model" OnValidSubmit="RegisterAsync">
+	<DataAnnotationsValidator />
+
+	<div class="card border-0 shadow-sm">
+		<div class="card-body text-center">
+			<h4>Hello!</h4>
+			<p class="text-muted">Register</p>
+			<div class="vstack text-start">
+				<div class="mb-3">
+					<label class="form-label">Name</label>
+					<InputText @bind-Value="_model.Name" placeholder="enter name" class="form-control rounded-pill fs-6" />
+					<ValidationMessage For="() => _model.Name" />
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label">Username</label>
+					<InputText @bind-Value="_model.Username" placeholder="enter username" class="form-control rounded-pill fs-6" />
+					<ValidationMessage For="() => _model.Username" />
+				</div>
+
+				<div class="mb-3">
+					<label class="form-label">Password</label>
+					<InputText @bind-Value="_model.Password" type="enter password" placeholder="Password" class="form-control rounded-pill fs-6" />
+					<ValidationMessage For="() => _model.Password" />
+				</div>
+				<button type="submit" class="btn btn-primary rounded-pill">Sign In</button>
+			</div>
+		</div>
+	</div>
+</EditForm>
+
+<p class="mt-2 text-center">Already have an account? <NavLink href="/signin">Sign in</NavLink></p>
+
 
 @code {
+	private RegisterModel _model = new();
 
+	private async Task RegisterAsync()
+	{
+		interop.ShowLoader();
+		try
+		{
+			await Task.Delay(5000);
+			var result = await authService.RegisterAsync(_model);
+			if (result.IsSuccess)
+			{
+				//Go to home page
+				navManager.NavigateTo("/home", replace: true);
+			}
+			else
+			{
+				//Show Error
+				await interop.ShowErrorAlertAsync(result.Error ?? "Error registering");
+			}
+		}
+		catch (Exception ex)
+		{
+			await interop.ShowErrorAlertAsync(ex.Message);
+		}
+		finally
+		{
+			interop.HideLoader();
+		}
+	}
 }

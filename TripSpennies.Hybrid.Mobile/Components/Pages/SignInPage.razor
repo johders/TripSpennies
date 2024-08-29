@@ -2,6 +2,8 @@
 @layout AuthorizationLayout
 
 @inject AuthorizationService authService
+@inject MauiInterop interop
+@inject NavigationManager navManager
 
 <EditForm Model="_model" OnValidSubmit="SigninAsync">
 	<DataAnnotationsValidator/>
@@ -28,26 +30,36 @@
 	</div>
 </EditForm>
 
+<p class="mt-2">No account yet? <NavLink href="/signup">Register</NavLink></p>
+
 @code {
 	private SigninModel _model = new();
 
 	private async Task SigninAsync()
 	{
+		interop.ShowLoader();
 		try
 		{
+			await Task.Delay(5000);
 			var result = await authService.SignInAsync(_model);
-			if (result.isSuccess)
+			if (result.IsSuccess)
 			{
 				//Go to home page
+				navManager.NavigateTo("/home", replace: true);
 			}
 			else
 			{
 				//Show Error
+				await interop.ShowErrorAlertAsync(result.Error ?? "Error signing in");
 			}
 		}
 		catch (Exception ex)
 		{
-			
+			await interop.ShowErrorAlertAsync(ex.Message);
+		}
+		finally
+		{
+			interop.HideLoader();
 		}
 	}
 }

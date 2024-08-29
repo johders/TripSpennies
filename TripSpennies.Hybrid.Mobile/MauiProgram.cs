@@ -29,10 +29,13 @@ namespace TripSpennies.Hybrid.Mobile
 
         private static void AddServices(IServiceCollection services)
         {
+            services.AddSingleton<AppViewModel>()
+                    .AddSingleton<MauiInterop>();
+
             services.AddSingleton<DbContext>()
-                    .AddScoped<SeedDataService>()
-                    .AddScoped<AuthorizationService>()
-                    .AddTransient<AppViewModel>();
+                    .AddScoped<SeedDataService>();
+
+            services.AddScoped<AuthorizationService>();
         }
     }
 }
