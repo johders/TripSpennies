@@ -2,11 +2,13 @@
 
 @inject AuthorizationService Authorized
 @inject NavigationManager NavigationManager
+@inject MauiInterop interop 
 
 @code{
 
 	protected override void OnInitialized()
 	{
+		interop.HideLoader();
 		if (Authorized.IsSignedIn)
 		{
 			NavigationManager.NavigateTo("/homepage", replace: true);

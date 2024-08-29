@@ -16,5 +16,8 @@ namespace TripSpennies.Hybrid.Mobile
         public async Task ShowErrorAlertAsync(string message, string? title = "Error") => await App.Current.MainPage.DisplayAlert(title, message, "Ok");
 		public async Task ShowSuccessAlertAsync(string message, string? title = "Success") => await App.Current.MainPage.DisplayAlert(title, message, "Ok");
 
-	}
+        public bool IsAndroid => DeviceInfo.Current.Platform == DevicePlatform.Android;
+        public bool IsIos => DeviceInfo.Current.Platform == DevicePlatform.iOS;
+
+    }
 }

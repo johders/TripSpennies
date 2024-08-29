@@ -31,7 +31,7 @@
 					<InputText @bind-Value="_model.Password" type="enter password" placeholder="Password" class="form-control rounded-pill fs-6" />
 					<ValidationMessage For="() => _model.Password" />
 				</div>
-				<button type="submit" class="btn btn-primary rounded-pill">Sign In</button>
+				<button type="submit" class="btn btn-primary rounded-pill">Register</button>
 			</div>
 		</div>
 	</div>
@@ -53,7 +53,7 @@
 			if (result.IsSuccess)
 			{
 				//Go to home page
-				navManager.NavigateTo("/home", replace: true);
+				navManager.NavigateTo("/homepage", replace: true);
 			}
 			else
 			{

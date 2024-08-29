@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 using TripSpennies.Hybrid.Mobile.ViewModels;
 
 namespace TripSpennies.Hybrid.Mobile
@@ -10,7 +11,8 @@ namespace TripSpennies.Hybrid.Mobile
             var builder = MauiApp.CreateBuilder();
             builder
                 .UseMauiApp<App>()
-                .ConfigureFonts(fonts =>
+				.UseMauiCommunityToolkit()
+				.ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 });

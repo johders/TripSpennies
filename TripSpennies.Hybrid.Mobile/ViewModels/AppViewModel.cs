@@ -4,7 +4,7 @@ namespace TripSpennies.Hybrid.Mobile.ViewModels
 {
 	public class AppViewModel : INotifyPropertyChanged
 	{
-		private bool _isBusy;
+		private bool _isBusy = true;
 
 		public event PropertyChangedEventHandler? PropertyChanged;
 
