@@ -1,13 +1,16 @@
 ﻿@page "/trips/manage"
 
+@inject NavigationManager navManager
+
 @inject MauiInterop mauiInterop
 @inject DropdownService dropdownService
+@inject TripsService tripsService
 
 <div class="img-container m-0 p-0 vw-100">
 
 </div>
 
-<EditForm Model="_model">
+<EditForm Model="_model" OnValidSubmit="SaveTripAsync">
 	<DataAnnotationsValidator/>
 	<div class="form-container">
 		<div class="form-body bg-white shadow d-flex flex-column">
@@ -19,10 +22,21 @@
 					<div class="d-flex flex-wrap justify-content-around">
 						@foreach(var category in _locationCategories)
 						{
-							<div class="rounded px-1 v-stack text-center border m-1">
-								<i class="position-absolute bi bi-check-circle-fill text-success"></i>
+							var iconClass = "bi bi-check-circle-fill text-muted";
+							var borderClass = "";
+							var nameClass = "text-muted";
+
+							if(_model.CategoryImage == category.Image)
+							{
+								iconClass = "bi bi-check-circle-fill text-success";
+								borderClass = "border-success shadow";
+								nameClass = "text-dark";
+							}
+
+							<div class="rounded px-1 v-stack text-center border m-1 @borderClass" @onclick="() => ToggleCategorySelection(category)">
+								<i class="position-absolute @iconClass"></i>
 								<img class="mt-3 mb-1 ms-1 category-img" src="@category.Image"/>
-								<label class ="category-label">@category.Name</label>
+								<label class="category-label @nameClass">@category.Name</label>
 							</div>
 						}
 						<ValidationMessage For="() => _model.CategoryImage"/>
@@ -100,6 +114,46 @@
 		_locationCategories = await dropdownService.GetLocationCategoriesAsync();
 		_statuses = dropdownService.GetTripStatuses();
 		mauiInterop.HideLoader();
+	}
+
+	private void ToggleCategorySelection(LocationCategory category)
+	{
+		if(_model.CategoryImage == category.Image)
+		{
+			_model.CategoryImage = string.Empty;
+		}
+		else
+		{
+			_model.CategoryImage = category.Image;
+		}
+	}
+
+	private async Task SaveTripAsync()
+	{
+		mauiInterop.ShowLoader();
+		try
+		{
+			var result = await tripsService.SaveTripAsync(_model);
+
+			if (result.IsSuccess)
+			{
+				await mauiInterop.ShowToastAsync("Trip saved");
+				navManager.NavigateTo("/homepage", replace: true);
+			}
+			else
+			{
+				await mauiInterop.ShowErrorAlertAsync(result.Error ?? "Error saving trip");
+
+			}
+		}
+		catch (Exception ex)
+		{
+			await mauiInterop.ShowErrorAlertAsync(ex.Message);
+		}
+		finally
+		{
+			mauiInterop.HideLoader();
+		}
 	}
 }
 

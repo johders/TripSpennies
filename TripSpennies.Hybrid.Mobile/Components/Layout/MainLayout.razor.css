@@ -5,6 +5,7 @@
 
 .body-content {
     padding-top: var(--navbar-height);
+    padding-bottom: calc(var(--navbar-height) + 20px);
 }
 
 .bottom-tabbar{

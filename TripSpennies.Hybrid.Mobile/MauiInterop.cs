@@ -1,4 +1,6 @@
 ﻿
+using CommunityToolkit.Maui.Alerts;
+
 namespace TripSpennies.Hybrid.Mobile
 {
 	public class MauiInterop
@@ -18,6 +20,12 @@ namespace TripSpennies.Hybrid.Mobile
 
         public bool IsAndroid => DeviceInfo.Current.Platform == DevicePlatform.Android;
         public bool IsIos => DeviceInfo.Current.Platform == DevicePlatform.iOS;
+
+        public async Task ShowToastAsync(string message)
+        {
+            var toast = Toast.Make(message, CommunityToolkit.Maui.Core.ToastDuration.Short);
+            await toast.Show();
+        }
 
     }
 }
