@@ -22,7 +22,7 @@ namespace TripSpennies.Hybrid.Mobile.Data
             return await action();
         }
 
-        private async Task<AsyncTableQuery<TTable>> GetTableAsync<TTable>() where TTable : class, new()
+        public async Task<AsyncTableQuery<TTable>> GetTableAsync<TTable>() where TTable : class, new()
         {
             await CreateTableIfNotExists<TTable>();
             return database.Table<TTable>();

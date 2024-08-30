@@ -37,7 +37,9 @@ namespace TripSpennies.Hybrid.Mobile
             services.AddSingleton<DbContext>()
                     .AddScoped<SeedDataService>();
 
-            services.AddScoped<AuthorizationService>();
+            services.AddScoped<AuthorizationService>()
+                    .AddSingleton<TripsService>()
+                    .AddScoped<DropdownService>();
         }
     }
 }

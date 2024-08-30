@@ -19,19 +19,22 @@
 
 <div class="d-flex justify-content-center w-100">
 	<div class="d-flex justify-content-center align-items-center vw-90 p-2 mx-1 my-2 bg-success bg-gradient position-fixed rounded-pill shadow-lg bottom-tabbar">
-		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center" @onclick="() => GoToPage(AppConstants.MenuItems.Home)">
-			<i class="bi bi-house-door-fill h3 mb-0"></i>
+		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center @(IsHomeSelected ? "shadow-lg" : "light-white")"
+			   @onclick="() => GoToPage(AppConstants.MenuItems.Home)">
+			<i class="bi @(IsHomeSelected ? "bi-house-door-fill" : "bi-house-door") h3 mb-0"></i>
 			<span class="fs-12">Home</span>
 		</label>
-		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center" @onclick="() => GoToPage(AppConstants.MenuItems.Trips)">
-			<i class="bi bi-suitcase-lg-fill h3 mb-0"></i>
+		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center @(IsTripsSelected ? "shadow-lg" : "light-white" )"
+		@onclick="() => GoToPage(AppConstants.MenuItems.Trips)">
+			<i class="bi @(IsTripsSelected ? "bi-suitcase-lg-fill" : "bi-suitcase-lg") h3 mb-0"></i>
 			<span class="fs-12">Trips</span>
 		</label>
-		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center" @onclick="@(() => GoToInnerPage("/trips/manage"))" >
+		<label class="rounded-pill px-3 py-1 light-white m-0 d-flex flex-column align-items-center" @onclick="@(() => GoToInnerPage("/trips/manage"))" >
 			<i class="bi bi-plus-circle h1 mb-0"></i>
 		</label>
-		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center" @onclick="() => GoToPage(AppConstants.MenuItems.Settings)">
-			<i class="bi bi-gear-fill h3 mb-0"></i>
+		<label class="rounded-pill px-3 py-1 text-white m-0 d-flex flex-column align-items-center @(IsSettingsSelected ? "shadow-lg" : "light-white" )" 
+		@onclick="() => GoToPage(AppConstants.MenuItems.Settings)">
+			<i class="bi @(IsSettingsSelected ? "bi-gear-fill" : "bi-gear") h3 mb-0"></i>
 			<span class="fs-12">Settings</span>
 		</label>
 	</div>
@@ -45,6 +48,10 @@
 		[AppConstants.MenuItems.Trips] = "/trips",
 		[AppConstants.MenuItems.Settings] = "/settings"
 	};
+
+	private bool IsHomeSelected => appState.SelectedMenuItem == AppConstants.MenuItems.Home;
+	private bool IsTripsSelected => appState.SelectedMenuItem == AppConstants.MenuItems.Trips;
+	private bool IsSettingsSelected => appState.SelectedMenuItem == AppConstants.MenuItems.Settings;
 
 	protected override void OnInitialized()
 	{
