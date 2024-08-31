@@ -1,0 +1,67 @@
+﻿@page "/trips/{tripId:int}"
+
+@inject NavigationManager navManager
+
+@inject MauiInterop mauiInterop
+@inject TripsService tripsService
+
+@if (_trip is not null)
+{
+	<div class="container-fluid m-0 p-0">
+		<img src="@_trip.CategoryImage" class="img-fluid"/>
+	</div>
+	<div class="d-flex justify-content-center w-100">
+		<div class="location bg-white shadow vw-95 px-3 py-2">
+			<div class="d-flex justify-content-between align-items-center">
+				<h3>@_trip.Title</h3>
+				<span class="rounded-pill text-white m-0 px-2 fs-12">@_trip.DisplayStatus</span>
+			</div>
+			<div class="vstack">
+				<label class="m-0 px-2 py-1">
+					<i class="bi bi-geo-fill m-0 p-0 me-2"></i>
+					<span class="">@_trip.Location</span>
+				</label>
+				<label class="m-0 px-2 py-1">
+					<i class="bi bi-calendar-event m-0 p-0 me-2"></i>
+					<span class="">@_trip.FromDate.ToShortDateString() - @_trip.ToDate.ToShortDateString()</span>
+				</label>
+				<label class="m-0 px-2 py-1">
+					<i class="bi bi-currency-exchange m-0 p-0 me-2"></i>
+					<span class="">@_totalExpense.ToString("c")</span>
+				</label>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid my-3 p-2">
+		<div class="d-flex justify-content-between align-items-center w-100">
+			<h4 class="m-0">Expenses</h4>
+			<label class="bg-light text-dark rounded-pill p-0 px-2 py-1 m-0 d-flex align-items-center" @onclick="GoToAddExpensePage">
+				<i class="bi bi-plus text-dark m-0 p-0"></i>
+				<span class="text-dark"> Add expense</span>
+			</label>
+		</div>
+	</div>
+}
+
+@code {
+	[Parameter]
+	public int TripId { get; set; }
+
+	private Trip _trip;
+
+	private double _totalExpense = 0;
+
+	private void GoToAddExpensePage()
+	{
+		navManager.NavigateTo($"/trips/{TripId}/expenses/add");
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		mauiInterop.ShowLoader();
+		_trip = await tripsService.GetTripAsync(TripId);
+		mauiInterop.HideLoader();
+	}
+
+}
