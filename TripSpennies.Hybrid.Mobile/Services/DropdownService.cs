@@ -14,5 +14,12 @@
         }
 
         public string[] GetTripStatuses() => Enum.GetNames<TripStatus>();
+
+        public async Task<string[]> GetExpenseCategoriesAsync()
+        {
+            return (await _dbContext.GetAllAsync<ExpenseCategory>())
+                .Select(e => e.Name)
+                .ToArray();
+        }
     }
 }

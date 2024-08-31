@@ -21,6 +21,7 @@
 
         public async Task<MethodDataResult<Trip>> SaveTripAsync(Trip trip)
         {
+            trip.Status = Enum.Parse<TripStatus>(trip.DisplayStatus);
             try
             {
 				if (trip.Id == 0)
@@ -42,10 +43,40 @@
             }
         }
 
-        public async Task<Trip?> GetTripAsync(int tripId)
+        public async Task<Trip?> GetTripAsync(int tripId, bool includeExpenses = false)
         {
-            return await _dbContext.FindAsync<Trip>(tripId);
+            var trip = await _dbContext.FindAsync<Trip>(tripId);
+
+            if (includeExpenses)
+            {
+               trip.Expenses = await _dbContext.GetFilteredAsync<Expense>(e => e.TripId == tripId) ?? Enumerable.Empty<Expense>();
+            }
+
+            return trip;
         }
+
+        public async Task<MethodDataResult<Expense>> SaveExpenseAsync(Expense expense)
+        {
+			
+			try
+			{
+				if (expense.Id == 0)
+				{
+					await _dbContext.AddItemAsync<Expense>(expense);
+				}
+				else
+				{
+					await _dbContext.UpdateItemAsync<Expense>(expense);
+				}
+
+				return MethodDataResult<Expense>.Success(expense);
+			}
+			catch (Exception ex)
+			{
+				return MethodDataResult<Expense>.Fail(ex.Message);
+			}
+
+		}
 
     }
 }

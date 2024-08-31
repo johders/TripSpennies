@@ -1,0 +1,100 @@
+﻿@page "/trips/{tripId:int}/expenses/add"
+
+@layout InnerPagesLayout
+
+@inject NavigationManager navManager
+
+@inject MauiInterop mauiInterop
+@inject DropdownService dropdownService
+@inject TripsService tripsService
+@inject AppState appState
+
+<div class="img-container m-0 p-0 vw-100">
+</div>
+
+<EditForm Model="_model" OnValidSubmit="SaveExpenseAsync">
+	<DataAnnotationsValidator />
+
+	<FormContent Heading="Add Expense" ButtonText="Save Expense">
+
+		<div class="mb-3">
+			<label class="form-label">For what</label>
+			<InputText @bind-Value="_model.Justification" class="form-control rounded-pill fs-6" placeholder="spending on" />
+			<ValidationMessage For="() => _model.Justification" />
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label">How much</label>
+			<InputNumber @bind-Value="_model.Amount" class="form-control rounded-pill fs-6" placeholder="how much" />
+			<ValidationMessage For="() => _model.Amount" />
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label">Category</label>
+			<InputSelect @bind-Value="_model.Category" class="form-control rounded-pill fs-6">
+				<option value="Choose Category"></option>
+			@foreach(var category in _expenseCategories)
+			{
+				<option value="@category">@category</option>
+			}
+			</InputSelect>
+			<ValidationMessage For="() => _model.Category" />
+		</div>
+
+		<div class="mb-3">
+			<label class="form-label">When</label>
+			<InputDate @bind-Value="_model.SpentOn" class="form-control rounded-pill fs-6" placeholder="spent on" />
+			<ValidationMessage For="() => _model.SpentOn" />
+		</div>
+
+	</FormContent>
+
+</EditForm>
+
+@code {
+
+	[Parameter]
+	public int TripId { get; set; }
+
+	Expense _model = new();
+
+	private string[] _expenseCategories = Array.Empty<string>();
+
+	protected override async Task OnInitializedAsync()
+	{
+		appState.SetInnerPageTitle("Add spennie");
+		mauiInterop.ShowLoader();
+		_expenseCategories = await dropdownService.GetExpenseCategoriesAsync();
+		mauiInterop.HideLoader();
+		_model.TripId = TripId;
+	}
+
+	private async Task SaveExpenseAsync()
+	{
+		mauiInterop.ShowLoader();
+		try
+		{
+			var result = await tripsService.SaveExpenseAsync(_model);
+
+			if (result.IsSuccess)
+			{
+				await mauiInterop.ShowToastAsync("Expense saved");
+				navManager.GoBack();
+			}
+			else
+			{
+				await mauiInterop.ShowErrorAlertAsync(result.Error ?? "Error saving expense");
+
+			}
+		}
+		catch (Exception ex)
+		{
+			await mauiInterop.ShowErrorAlertAsync(ex.Message);
+		}
+		finally
+		{
+			mauiInterop.HideLoader();
+		}
+	}
+}
+

@@ -18,8 +18,8 @@ namespace TripSpennies.Hybrid.Mobile.Data
 
         [Required, MaxLength(30)]
         public string CategoryImage { get; set; }
-        public DateTime FromDate { get; set; }
-        public DateTime ToDate { get; set; }
+        public DateTime? FromDate { get; set; }
+        public DateTime? ToDate { get; set; }
         public DateTime AddedOn { get; set; }
         public DateTime ModifiedOn { get; set; }
 		
@@ -37,6 +37,9 @@ namespace TripSpennies.Hybrid.Mobile.Data
 
 		[Ignore]
         public string DisplayStatus { get; set; }
+
+        [Ignore]
+        public IEnumerable<Expense> Expenses { get; set; }
 
     }
 }

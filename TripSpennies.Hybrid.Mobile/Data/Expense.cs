@@ -18,6 +18,6 @@ namespace TripSpennies.Hybrid.Mobile.Data
 
         [Required]
         public string Category { get; set; }
-        public DateTime SpentOn { get; set; }
+        public DateTime? SpentOn { get; set; }
     }
 }

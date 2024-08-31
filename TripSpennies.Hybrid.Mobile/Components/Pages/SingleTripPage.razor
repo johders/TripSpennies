@@ -10,14 +10,24 @@
 
 @if (_trip is not null)
 {
+
+	var statusColor = _trip.Status switch
+	{
+		TripStatus.Planned => "bg-secondary",
+		TripStatus.OnGoin => "bg-success",
+		TripStatus.Completed => "bg-primary",
+		TripStatus.Cancelled => "bg-danger"
+	};
+
+
 	<div class="container-fluid m-0 p-0">
 		<img src="@_trip.CategoryImage" class="img-fluid"/>
 	</div>
 	<div class="d-flex justify-content-center w-100">
-		<div class="location bg-white shadow vw-95 px-3 py-2">
+		<div class="location rounded bg-white shadow vw-95 px-3 py-2">
 			<div class="d-flex justify-content-between align-items-center">
 				<h3>@_trip.Title</h3>
-				<span class="rounded-pill text-white m-0 px-2 fs-12">@_trip.DisplayStatus</span>
+				<span class="rounded-pill @statusColor text-white m-0 px-2 fs-12">@_trip.DisplayStatus</span>
 			</div>
 			<div class="vstack">
 				<label class="m-0 px-2 py-1">
@@ -26,7 +36,7 @@
 				</label>
 				<label class="m-0 px-2 py-1">
 					<i class="bi bi-calendar-event m-0 p-0 me-2"></i>
-					<span class="">@_trip.FromDate.ToShortDateString() - @_trip.ToDate.ToShortDateString()</span>
+					<span class="">@_trip.FromDate?.ToShortDateString() - @_trip.ToDate?.ToShortDateString()</span>
 				</label>
 				<label class="m-0 px-2 py-1">
 					<i class="bi bi-currency-exchange m-0 p-0 me-2"></i>
@@ -44,6 +54,41 @@
 				<span class="text-dark"> Add expense</span>
 			</label>
 		</div>
+
+		@if (!_trip.Expenses.Any())
+		{
+			<div class="empty-trips-countainer d-flex w-100 flex-column align-items-center justify-content-center" style="min-height: 200px">
+				<label class="text-muted fs-4 mb-2">No spennies yet</label>
+				<button type="button" class="btn-secondary rounded-pill" @onclick="GoToAddExpensePage">
+					<i class="bi bi-plus m-0 p-0"></i>
+					<span>Add spennie</span>
+				</button>
+			</div>
+		}
+		else
+		{
+			<div class="row mt-3">
+				@foreach(var expense in _trip.Expenses)
+				{
+					<div class="col-12">
+						<div class="card my-2 p-3">
+							<div class="d-flex justify-content-between align-items-center">
+								<div class="vstack">
+									<h4>@expense.Justification <span class="badge bg-primary">@expense.Category</span> </h4>
+									<label>
+										<i class="bi bi-calendar-event me-2"></i>
+										<span>@expense.SpentOn?.ToShortDateString()</span>
+									</label>
+								</div>
+								<h3>@expense.Amount.ToString("c")</h3>
+							</div>
+						</div>
+					</div>	
+				}
+
+			</div>
+		}
+
 	</div>
 }
 
@@ -63,8 +108,9 @@
 	protected override async Task OnInitializedAsync()
 	{
 		mauiInterop.ShowLoader();
-		_trip = await tripsService.GetTripAsync(TripId);
+		_trip = await tripsService.GetTripAsync(TripId, includeExpenses: true);
 		appState.SetInnerPageTitle(_trip.Title);
+		_totalExpense = _trip.Expenses.Sum(e => e.Amount);
 		mauiInterop.HideLoader();
 	}
 
