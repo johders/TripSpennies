@@ -61,8 +61,8 @@
 		mauiInterop.HideLoader();
 	}
 
-	private void GoToAddTripPage() => navManager.NavigateTo("/trips/manage");
-	private void GoToSingleTripPage(int tripId) => navManager.NavigateTo($"trips/{tripId}");
+	private void GoToAddTripPage() => navManager.GoToInnerPage("/trips/manage");
+	private void GoToSingleTripPage(int tripId) => navManager.GoToInnerPage($"trips/{tripId}");
 
 }
 

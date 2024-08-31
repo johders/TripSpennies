@@ -1,10 +1,13 @@
 ﻿@page "/trips/manage"
 
+@layout InnerPagesLayout
+
 @inject NavigationManager navManager
 
 @inject MauiInterop mauiInterop
 @inject DropdownService dropdownService
 @inject TripsService tripsService
+@inject AppState appState
 
 <div class="img-container m-0 p-0 vw-100">
 
@@ -84,7 +87,7 @@
 			<div class="row my-3">
 				<div class="col-1"></div>
 				<div class="col-2">
-					<button type="button" class="btn btn-outline-danger shadow">
+					<button type="button" class="btn btn-outline-danger shadow" @onclick="() => navManager.GoBack()">
 						<i class="bi bi-x-lg"></i>
 					</button>
 				</div>
@@ -110,6 +113,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
+		appState.SetInnerPageTitle("Add trip");
 		mauiInterop.ShowLoader();
 		_locationCategories = await dropdownService.GetLocationCategoriesAsync();
 		_statuses = dropdownService.GetTripStatuses();
@@ -138,7 +142,7 @@
 			if (result.IsSuccess)
 			{
 				await mauiInterop.ShowToastAsync("Trip saved");
-				navManager.NavigateTo("/homepage", replace: true);
+				navManager.GoBack();
 			}
 			else
 			{
@@ -156,34 +160,3 @@
 		}
 	}
 }
-
-@* <style type="txt/css">
-	.img-container{
-		background-image: url("/images/beach.jpg");
-		background-position-y: -100px;
-		height: 250px;
-	}
-
-	.form-container{
-		background-color: transparent;
-		margin-top: -200px;
-		padding: 25px, 10px
-	}
-
-	.form-body{
-		background-color: white;
-		border-radius: 40px 40px 0 0;
-		min-height: calc(100vh - 200px);
-		padding: 15px;
-	}
-
-	.category-img{
-		width: 25px;
-		height: 25px;
-		background-color: red;
-	}
-
-	.category-label{
-		font-size: 12px;
-	}
-</style> *@

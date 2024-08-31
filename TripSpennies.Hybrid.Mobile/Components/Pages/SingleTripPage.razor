@@ -1,9 +1,12 @@
 ﻿@page "/trips/{tripId:int}"
 
+@layout InnerPagesLayout
+
 @inject NavigationManager navManager
 
 @inject MauiInterop mauiInterop
 @inject TripsService tripsService
+@inject AppState appState
 
 @if (_trip is not null)
 {
@@ -54,13 +57,14 @@
 
 	private void GoToAddExpensePage()
 	{
-		navManager.NavigateTo($"/trips/{TripId}/expenses/add");
+		navManager.GoToInnerPage($"/trips/{TripId}/expenses/add");
 	}
 
 	protected override async Task OnInitializedAsync()
 	{
 		mauiInterop.ShowLoader();
 		_trip = await tripsService.GetTripAsync(TripId);
+		appState.SetInnerPageTitle(_trip.Title);
 		mauiInterop.HideLoader();
 	}
 

@@ -1,4 +1,5 @@
-﻿@inherits LayoutComponentBase
+﻿@using System.ComponentModel
+@inherits LayoutComponentBase
 
 @implements IDisposable
 
@@ -55,12 +56,15 @@
 
 	protected override void OnInitialized()
 	{
-		appState.SelectedMenuItemChangedEvent += OnSelectedMenuItemChanged;
+		appState.PropertyChanged += OnAppStatePropertyChanged;
 	}
 
-	private void OnSelectedMenuItemChanged(object? sender, string selectedMenuItem)
+	private void OnAppStatePropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		StateHasChanged();	
+		if(e.PropertyName == nameof(appState.SelectedMenuItem))
+		{
+			StateHasChanged();
+		}
 	}
 
 	private void GoToPage(string pageName)
@@ -70,11 +74,11 @@
 
 	private void GoToInnerPage(string url)
 	{
-		navManager.NavigateTo(url);
+		navManager.GoToInnerPage(url);
 	}
 
 	public void Dispose()
 	{
-		appState.SelectedMenuItemChangedEvent -= OnSelectedMenuItemChanged;
+		appState.PropertyChanged -= OnAppStatePropertyChanged;
 	}
 }

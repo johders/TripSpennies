@@ -1,0 +1,64 @@
+﻿@using System.ComponentModel
+@inherits LayoutComponentBase
+
+@implements IDisposable
+@inject NavigationManager navManager
+
+@inject MauiInterop interop
+@inject AppState appState
+
+<div class="w-100 position-fixed p-3 mb-3 bg-white shadow-sm top-navbar">
+	<div class="hstack gap-3">
+		<i class="bi bi-chevron-left" @onclick="GoBack"></i>
+		<h3 class="m-0 w-100 @(interop.IsIos ? "text-center" : "text-start")">@appState.PageTitle</h3>
+		<i class="bi bi-person-circle h2 my-auto"></i>
+	</div>
+</div>
+
+<div class="body-content">
+	@Body
+</div>
+
+@code {
+
+	private static IDictionary<string, string> _pagesMap = new Dictionary<string, string>
+		{
+			[AppConstants.MenuItems.Home] = "/",
+			[AppConstants.MenuItems.Trips] = "/trips",
+			[AppConstants.MenuItems.Settings] = "/settings"
+		};
+
+	private bool IsHomeSelected => appState.SelectedMenuItem == AppConstants.MenuItems.Home;
+	private bool IsTripsSelected => appState.SelectedMenuItem == AppConstants.MenuItems.Trips;
+	private bool IsSettingsSelected => appState.SelectedMenuItem == AppConstants.MenuItems.Settings;
+
+	protected override void OnInitialized()
+	{
+		appState.PropertyChanged += OnAppStatePropertyChanged;
+	}
+
+	private void OnAppStatePropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == nameof(appState.InnerPageTitle))
+		{
+			StateHasChanged();
+		}
+	}
+
+	private void GoBack() => navManager.GoBack();
+
+	private void GoToPage(string pageName)
+	{
+		navManager.NavigateTo(_pagesMap[pageName]);
+	}
+
+	private void GoToInnerPage(string url)
+	{
+		navManager.NavigateTo(url);
+	}
+
+	public void Dispose()
+	{
+		appState.PropertyChanged -= OnAppStatePropertyChanged;
+	}
+}
