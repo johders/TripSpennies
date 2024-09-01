@@ -83,5 +83,17 @@
             return await _dbContext.FindAsync<Expense>(expenseId);
         }
 
+        public async Task<MethodResult> SaveExpenseCategoryAsync(string categoryName)
+        {
+            var dbCategory = await _dbContext.FindAsync<ExpenseCategory>(categoryName);
+
+            if(dbCategory is not null)
+            {
+                return MethodResult.Fail($"Category: {categoryName} already exists");
+            }
+            await _dbContext.AddItemAsync<ExpenseCategory>(new ExpenseCategory(categoryName));
+            return MethodResult.Success(); 
+        }
+
     }
 }

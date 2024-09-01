@@ -39,7 +39,22 @@
             _preferences.Set(LoggedInKey, loggedInUser.ToJson());
         }
 
-        public async Task<MethodResult> SignInAsync(SigninModel model)
+        public async Task ChangeNameAsync(string newName)
+        {
+            var dbUser = await _dbContext.FindAsync<User>(CurrentUser.Id);
+            dbUser.Name = newName;
+            await _dbContext.UpdateItemAsync(dbUser);
+            SetUser(dbUser);
+        }
+
+		public async Task ChangePasswordAsync(string newPassword)
+		{
+			var dbUser = await _dbContext.FindAsync<User>(CurrentUser.Id);
+			dbUser.Password = newPassword;
+			await _dbContext.UpdateItemAsync(dbUser);
+		}
+
+		public async Task<MethodResult> SignInAsync(SigninModel model)
         {
             var dbUsers = await _dbContext.GetFilteredAsync<User>(u => u.Username == model.Username && u.Password == model.Password);
             var dbUser = dbUsers.FirstOrDefault();

@@ -27,5 +27,22 @@ namespace TripSpennies.Hybrid.Mobile
             await toast.Show();
         }
 
+        public async Task<string?> ShowPromptAsync(string title, string message, string okButtonText, string placeholder)
+        {
+            return await App.Current.MainPage.DisplayPromptAsync(title, message, okButtonText, placeholder:placeholder);
+        }
+
+        public async Task OpenInLauncher()
+        {
+            try
+            {
+                await Launcher.Default.OpenAsync("https://www.google.com");
+            }
+            catch (Exception ex)
+            {
+                var result = ex.Message;
+            }
+        }
+
     }
 }

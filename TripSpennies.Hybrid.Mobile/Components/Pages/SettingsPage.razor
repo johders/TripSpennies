@@ -2,6 +2,7 @@
 
 @inject NavigationManager navManager
 
+@inject MauiInterop mauiInterop
 @inject AppState appState
 @inject AuthorizationService authorizeService
 
@@ -12,21 +13,21 @@
 		</label>
 		<div class="flex-grow-1 my-3 py-2 w-100 d-flex align-items-center">
 			<ul class="list-group list-group-flush w-100">
-				<li class="list-group-item">
+				<li class="list-group-item" @onclick="ChangeNameAsync">
 					<div class="hstack gap-3">
 						<i class="bi bi-person-circle"></i>
-						<label>My profile</label>
+						<label>Change username</label>
 					</div>
 				</li>
 
-				<li class="list-group-item">
+				<li class="list-group-item" @onclick="ChangePasswordAsync">
 					<div class="hstack gap-3">
 						<i class="bi bi-lock"></i>
 						<label>Change password</label>
 					</div>
 				</li>
 
-				<li class="list-group-item">
+				<li class="list-group-item" @onclick="GoToManageExpenseCategoriesPage">
 					<div class="hstack gap-3">
 						<i class="bi bi-columns"></i>
 						<label>Manage expense categories</label>
@@ -41,9 +42,10 @@
 
 			</ul>
 		</div>
-		<label class="bg-danger rounded-pill py-1 px-3 text-white m-0 d-flex align-items-center" @onclick="Signout"></label>
+		<label class="bg-danger rounded-pill py-1 px-3 text-white m-0 d-flex align-items-center" @onclick="Signout">
 		<i class="bi bi-box-arrow-right m-0 p-0 me-2"></i>
 		<span>Sign Out</span>
+		</label>
 
 	</div>
 </div>
@@ -52,13 +54,42 @@
 	protected override async Task OnInitializedAsync()
 	{
 		appState.SetSelectedMenuItem(AppConstants.MenuItems.Settings);
-		appState.NoTabbarItems();
+		appState.AddTabbarItems(new TabbarItem("bi-door-open", () => mauiInterop.OpenInLauncher()));
 	}
 
 	private void Signout()
 	{
 		authorizeService.SignOut();
 		navManager.NavigateTo("/signin", replace: true);
+	}
+
+	private async Task ChangeNameAsync()
+	{
+		var newName = await mauiInterop.ShowPromptAsync("Your name", "Enter name", "Save", authorizeService.CurrentUser.Name);
+
+		if (!string.IsNullOrWhiteSpace(newName))
+		{
+			mauiInterop.ShowLoader();
+			await authorizeService.ChangeNameAsync(newName);
+			mauiInterop.HideLoader();
+		}
+	}
+
+	private async Task ChangePasswordAsync()
+	{
+		var newPassword = await mauiInterop.ShowPromptAsync("Change Password", "Enter new password", "Save", string.Empty);
+
+		if (!string.IsNullOrWhiteSpace(newPassword))
+		{
+			mauiInterop.ShowLoader();
+			await authorizeService.ChangePasswordAsync(newPassword);
+			mauiInterop.HideLoader();
+		}
+	}
+
+	private void GoToManageExpenseCategoriesPage()
+	{
+		navManager.GoToInnerPage("manage-expense-categories");
 	}
 
 }
