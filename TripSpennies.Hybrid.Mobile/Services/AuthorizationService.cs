@@ -13,6 +13,8 @@
 
         public bool IsSignedIn => _preferences.ContainsKey(LoggedInKey);
 
+        public LoggedInUser CurrentUser => LoggedInUser.LoadFromJson(_preferences.Get<string>(LoggedInKey, string.Empty));
+
         public async Task<MethodResult> RegisterAsync(RegisterModel model)
         {
             var user = new User
