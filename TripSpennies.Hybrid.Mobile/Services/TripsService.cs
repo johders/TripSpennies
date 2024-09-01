@@ -78,5 +78,10 @@
 
 		}
 
+        public async Task<Expense?> GetExpenseAsync(long expenseId)
+        {
+            return await _dbContext.FindAsync<Expense>(expenseId);
+        }
+
     }
 }

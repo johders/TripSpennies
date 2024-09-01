@@ -70,7 +70,7 @@
 			<div class="row mt-3">
 				@foreach(var expense in _trip.Expenses)
 				{
-					<div class="col-12">
+					<div class="col-12" @onclick="() => GoToEditExpensePage(expense.Id)">
 						<div class="card my-2 p-3">
 							<div class="d-flex justify-content-between align-items-center">
 								<div class="vstack">
@@ -93,8 +93,8 @@
 }
 
 @code {
-	[Parameter]
-	public int TripId { get; set; }
+		[Parameter]
+		public int TripId { get; set; }
 
 	private Trip _trip;
 
@@ -112,6 +112,11 @@
 		appState.SetInnerPageTitle(_trip.Title);
 		_totalExpense = _trip.Expenses.Sum(e => e.Amount);
 		mauiInterop.HideLoader();
+	}
+
+	private void GoToEditExpensePage(long expenseId)
+	{
+		navManager.GoToInnerPage($"/trips/{TripId}/expenses/{expenseId}/edit");
 	}
 
 }
