@@ -1,12 +1,80 @@
 ﻿@page "/trips"
 
-@inject AppState appState
+@inject NavigationManager navManager
 
-<h3>Trips</h3>
+@inject MauiInterop mauiInterop
+@inject AppState appState
+@inject TripsService tripsService
+
+<div class="container">	
+	@if (!_trips.Any())
+	{
+		<div class="empty-trips-container d-flex w-100 flex-column align-items-center justify-content-center">
+			<label class="text-muted fs-4 mb-2">No trips yet</label>
+			<button type="button" class="btn-secondary rounded-pill" @onclick="GoToAddTripPage">
+				<i class="bi bi-plus m-0 p-0"></i>
+				<span>Add trip</span>
+			</button>
+		</div>
+	}
+	else
+	{
+		<div class="row py-3">
+			@foreach(var trip in _trips)
+			{
+				<div class="col-12 mb-3">
+					<div class="card" @onclick="() => GoToSingleTripPage(trip.Id)">
+						<div class="hstack gap-3">
+							<img src="@trip.CategoryImage" class="trip-img" />
+							<div class="vr"></div>
+							<div class="vstack p-2">
+								<div class="d-flex justify-content-between align-items-center">
+									<h3>@trip.Title</h3>
+									<span class="rounded-pill @trip.StatusBgColor text-white m-0 px-2 fs-12">@trip.DisplayStatus</span>
+								</div>
+								<label class="m-0 px-2 py-1">
+									<i class="bi bi-geo p-0 me-2"></i>
+									<span>@trip.Location</span>
+								</label>
+								<label class="m-0 px-2 py-1">
+									<i class="bi bi-calendar-event"></i>
+									<span>@trip.FromDate?.ToShortDateString() - @trip.ToDate?.ToShortDateString()</span>
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+	}
+</div>
+
 
 @code {
+
+	private IEnumerable<Trip> _trips = Enumerable.Empty<Trip>();
+
 	protected override async Task OnInitializedAsync()
 	{
+		appState.AddTabbarItems(new TabbarItem("bi-plus-circle", GoToAddTripPage));
 		appState.SetSelectedMenuItem(AppConstants.MenuItems.Trips);
+		mauiInterop.ShowLoader();
+
+		_trips = await tripsService.GetTripsAsync(1, 1000);
+		mauiInterop.HideLoader();
 	}
+
+	private void GoToAddTripPage() => navManager.GoToInnerPage("/trips/manage");
+	private void GoToSingleTripPage(int tripId) => navManager.GoToInnerPage($"trips/{tripId}");
+
 }
+
+<style type="text/css" scoped>
+	.empty-trips-container{
+		height: calc(100vh - var(--navbar-height));
+	}
+
+	.trip-img{
+		width: 100px;
+	}
+</style>

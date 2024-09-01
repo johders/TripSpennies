@@ -68,6 +68,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
+		appState.NoTabbarItems();
 		mauiInterop.ShowLoader();
 		_expenseCategories = await dropdownService.GetExpenseCategoriesAsync();
 		if(ExpenseId.HasValue && ExpenseId > 0)

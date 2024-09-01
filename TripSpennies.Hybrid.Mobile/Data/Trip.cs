@@ -41,5 +41,15 @@ namespace TripSpennies.Hybrid.Mobile.Data
         [Ignore]
         public IEnumerable<Expense> Expenses { get; set; }
 
-    }
+        [Ignore]
+        public string StatusBgColor => Status switch
+	    {
+		    TripStatus.Planned => "bg-secondary",
+		    TripStatus.OnGoin => "bg-success",
+		    TripStatus.Completed => "bg-primary",
+		    TripStatus.Cancelled => "bg-danger",
+            _ => "bg-dark"
+	    };
+
+}
 }

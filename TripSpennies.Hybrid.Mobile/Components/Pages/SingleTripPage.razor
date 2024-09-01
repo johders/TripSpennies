@@ -10,16 +10,6 @@
 
 @if (_trip is not null)
 {
-
-	var statusColor = _trip.Status switch
-	{
-		TripStatus.Planned => "bg-secondary",
-		TripStatus.OnGoin => "bg-success",
-		TripStatus.Completed => "bg-primary",
-		TripStatus.Cancelled => "bg-danger"
-	};
-
-
 	<div class="container-fluid m-0 p-0">
 		<img src="@_trip.CategoryImage" class="img-fluid"/>
 	</div>
@@ -27,7 +17,7 @@
 		<div class="location rounded bg-white shadow vw-95 px-3 py-2">
 			<div class="d-flex justify-content-between align-items-center">
 				<h3>@_trip.Title</h3>
-				<span class="rounded-pill @statusColor text-white m-0 px-2 fs-12">@_trip.DisplayStatus</span>
+				<span class="rounded-pill @_trip.StatusBgColor text-white m-0 px-2 fs-12">@_trip.DisplayStatus</span>
 			</div>
 			<div class="vstack">
 				<label class="m-0 px-2 py-1">
@@ -93,8 +83,8 @@
 }
 
 @code {
-		[Parameter]
-		public int TripId { get; set; }
+	[Parameter]
+	public int TripId { get; set; }
 
 	private Trip _trip;
 
@@ -107,6 +97,7 @@
 
 	protected override async Task OnInitializedAsync()
 	{
+		appState.AddTabbarItems(new TabbarItem("bi-pencil-square", () => GoToEditTripPage()));
 		mauiInterop.ShowLoader();
 		_trip = await tripsService.GetTripAsync(TripId, includeExpenses: true);
 		appState.SetInnerPageTitle(_trip.Title);
@@ -117,6 +108,12 @@
 	private void GoToEditExpensePage(long expenseId)
 	{
 		navManager.GoToInnerPage($"/trips/{TripId}/expenses/{expenseId}/edit");
+	}
+
+	private void GoToEditTripPage()
+	{
+		navManager.GoToInnerPage($"/trips/{TripId}/edit");
+
 	}
 
 }

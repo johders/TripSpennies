@@ -11,7 +11,18 @@
 	<div class="hstack gap-3">
 		<i class="bi bi-chevron-left" @onclick="GoBack"></i>
 		<h3 class="m-0 w-100 @(interop.IsIos ? "text-center" : "text-start")">@appState.PageTitle</h3>
-		<i class="bi bi-person-circle h2 my-auto"></i>
+
+		@if (appState.TabbarItems.Length > 0)
+		{
+			<label>
+				@foreach (var tabbarItem in appState.TabbarItems)
+				{
+					<i class="bi @tabbarItem.Icon h2 my-auto" @onclick="@tabbarItem.OnTap"></i>
+				}
+			</label>
+
+			//bi-person-circle
+		}
 	</div>
 </div>
 
@@ -39,7 +50,7 @@
 
 	private void OnAppStatePropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		if (e.PropertyName == nameof(appState.InnerPageTitle))
+		if (e.PropertyName == nameof(appState.SelectedMenuItem) || e.PropertyName == nameof(appState.TabbarItems))
 		{
 			StateHasChanged();
 		}
